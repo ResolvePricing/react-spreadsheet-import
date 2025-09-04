@@ -3,6 +3,7 @@ import { createContext } from "react"
 import type { RsiProps } from "../types"
 import type { CustomTheme } from "../theme"
 
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 export const RsiContext = createContext({} as any)
 
 type ProvidersProps<T extends string> = {

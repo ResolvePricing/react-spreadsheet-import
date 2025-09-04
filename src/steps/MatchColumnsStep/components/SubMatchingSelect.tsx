@@ -15,6 +15,7 @@ export const SubMatchingSelect = <T extends string>({ option, column, onSubChang
   const styles = useStyleConfig("MatchColumnsStep") as Styles
   const { translations, fields } = useRsi<T>()
   const options = getFieldOptions(fields, column.value)
+  // biome-ignore lint/suspicious/noDoubleEquals: <explanation>
   const value = options.find((opt) => opt.value == option.value)
 
   return (
@@ -23,6 +24,7 @@ export const SubMatchingSelect = <T extends string>({ option, column, onSubChang
       <MatchColumnSelect
         value={value}
         placeholder={translations.matchColumnsStep.subSelectPlaceholder}
+        // biome-ignore lint/style/noNonNullAssertion: <explanation>
         onChange={(value) => onSubChange(value?.value as T, column.index, option.entry!)}
         options={options}
         name={option.entry}

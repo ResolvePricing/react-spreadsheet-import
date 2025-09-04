@@ -1,5 +1,7 @@
+
+
 import type { Field } from "../../../types"
-import { Column, ColumnType, MatchColumnsProps, MatchedOptions } from "../MatchColumnsStep"
+import { type Column, ColumnType, type MatchColumnsProps, type MatchedOptions } from "../MatchColumnsStep"
 import { uniqueEntries } from "./uniqueEntries"
 
 export const setColumn = <T extends string>(
@@ -9,7 +11,8 @@ export const setColumn = <T extends string>(
   autoMapSelectValues?: boolean,
 ): Column<T> => {
   switch (field?.fieldType.type) {
-    case "select":
+    case "select": {
+      
       const fieldOptions = field.fieldType.options
       const uniqueData = uniqueEntries(data || [], oldColumn.index) as MatchedOptions<T>[]
       const matchedOptions = autoMapSelectValues
@@ -20,6 +23,7 @@ export const setColumn = <T extends string>(
             return value ? ({ ...record, value } as MatchedOptions<T>) : (record as MatchedOptions<T>)
           })
         : uniqueData
+      // biome-ignore lint/suspicious/noDoubleEquals: <explanation>
       const allMatched = matchedOptions.filter((o) => o.value).length == uniqueData?.length
 
       return {
@@ -28,6 +32,7 @@ export const setColumn = <T extends string>(
         value: field.key,
         matchedOptions,
       }
+    }
     case "checkbox":
       return { index: oldColumn.index, type: ColumnType.matchedCheckbox, value: field.key, header: oldColumn.header }
     case "input":

@@ -42,6 +42,7 @@ export const ColumnGrid = <T extends string>({
             <Text sx={styles.title}>{translations.matchColumnsStep.userTableTitle}</Text>
           </Box>
           {columns.map((column, index) => (
+            // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
             <Box gridRow="2/3" gridColumn={`${index + 2}/${index + 3}`} pt={3} key={column.header + index}>
               {userColumn(column)}
             </Box>
@@ -55,6 +56,7 @@ export const ColumnGrid = <T extends string>({
             <Box
               gridRow="4/5"
               gridColumn={`${index + 2}/${index + 3}`}
+              // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
               key={column.header + index}
               py="1.125rem"
               pl={2}

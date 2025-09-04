@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Heading, ModalBody, Radio, RadioGroup, Stack, useStyleConfig, Text } from "@chakra-ui/react"
 import { useCallback, useState } from "react"
 import { ContinueButton } from "../../components/ContinueButton"

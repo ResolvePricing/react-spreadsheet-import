@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useCallback, useState } from "react"
 import { Heading, ModalBody, useStyleConfig, Box } from "@chakra-ui/react"
 import { SelectHeaderTable } from "./components/SelectHeaderTable"

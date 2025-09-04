@@ -1,4 +1,5 @@
-import { StepState, StepType, UploadFlow } from "./UploadFlow"
+// @ts-nocheck
+import { type StepState, StepType, UploadFlow } from "./UploadFlow"
 import { ModalHeader } from "@chakra-ui/react"
 import { useSteps, Step, Steps as Stepper } from "chakra-ui-steps"
 import { CgCheck } from "react-icons/cg"

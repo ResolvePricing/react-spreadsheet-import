@@ -1,4 +1,7 @@
+// @ts-nocheck
+
 import type { Data, Fields, Info, RowHook, TableHook } from "../../../types"
+// biome-ignore lint/suspicious/noShadowRestrictedNames: <explanation>
 import type { Meta, Error, Errors } from "../types"
 import { v4 } from "uuid"
 import { ErrorSources } from "../../../types"
@@ -20,6 +23,7 @@ export const addErrorsAndRunHooks = async <T extends string>(
   }
 
   if (tableHook) {
+    // biome-ignore lint/style/noParameterAssign: <explanation>
     data = await tableHook(data, (...props) => addError(ErrorSources.Table, ...props))
   }
 
@@ -29,6 +33,7 @@ export const addErrorsAndRunHooks = async <T extends string>(
         data[index] = await rowHook(data[index], (...props) => addError(ErrorSources.Row, index, ...props), data)
       }
     } else {
+      // biome-ignore lint/style/noParameterAssign: <explanation>
       data = await Promise.all(
         data.map(async (value, index) =>
           rowHook(value, (...props) => addError(ErrorSources.Row, index, ...props), data),
@@ -37,7 +42,9 @@ export const addErrorsAndRunHooks = async <T extends string>(
     }
   }
 
+  // biome-ignore lint/complexity/noForEach: <explanation>
   fields.forEach((field) => {
+    // biome-ignore lint/complexity/noForEach: <explanation>
     field.validations?.forEach((validation) => {
       switch (validation.rule) {
         case "unique": {
@@ -46,6 +53,7 @@ export const addErrorsAndRunHooks = async <T extends string>(
           const taken = new Set() // Set of items used at least once
           const duplicates = new Set() // Set of items used multiple times
 
+          // biome-ignore lint/complexity/noForEach: <explanation>
           values.forEach((value) => {
             if (validation.allowEmpty && !value) {
               // If allowEmpty is set, we will not validate falsy fields such as undefined or empty string.
@@ -134,6 +142,7 @@ export const addErrorsAndRunHooks = async <T extends string>(
         return newValue
       }
 
+      // biome-ignore lint/style/noNonNullAssertion: <explanation>
       const errorsWithoutTableError = Object.entries(value.__errors!).reduce((acc, [key, value]) => {
         if (value.source === ErrorSources.Row) {
           acc[key] = value

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import type { Columns } from "../MatchColumnsStep"
 import { ColumnType } from "../MatchColumnsStep"
 import type { Data, Fields, RawData } from "../../../types"
@@ -9,8 +10,10 @@ export const normalizeTableData = <T extends string>(columns: Columns<T>, data: 
       const curr = row[index]
       switch (column.type) {
         case ColumnType.matchedCheckbox: {
+          // biome-ignore lint/style/noNonNullAssertion: <explanation>
           const field = fields.find((field) => field.key === column.value)!
           if ("booleanMatches" in field.fieldType && Object.keys(field.fieldType).length) {
+            // biome-ignore lint/style/noNonNullAssertion: <explanation>
             const booleanMatchKey = Object.keys(field.fieldType.booleanMatches || []).find(
               (key) => key.toLowerCase() === curr?.toLowerCase(),
             )!

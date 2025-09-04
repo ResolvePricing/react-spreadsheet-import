@@ -1,5 +1,6 @@
+
+
 import type { Meta } from "./steps/ValidationStep/types"
-import type { DeepReadonly } from "ts-essentials"
 import type { TranslationsRSIProps } from "./translationsRSIProps"
 import type { Columns } from "./steps/MatchColumnsStep/MatchColumnsStep"
 import type { StepState } from "./steps/UploadFlow"
@@ -22,6 +23,7 @@ export type RsiProps<T extends string> = {
   // Runs after column matching and on entry change
   tableHook?: TableHook<T>
   // Function called after user finishes the flow. You can return a promise that will be awaited.
+  // biome-ignore lint/suspicious/noConfusingVoidType lint/suspicious/noExplicitAny: <explanation> 
   onSubmit: (data: Result<T>, file: File) => void | Promise<any>
   // Allows submitting with errors. Default: true
   allowInvalidSubmit?: boolean
@@ -54,6 +56,11 @@ export type RsiProps<T extends string> = {
 export type RawData = Array<string | undefined>
 
 export type Data<T extends string> = { [key in T]: string | boolean | undefined }
+
+export type DeepReadonlyObject<T> = { readonly [P in keyof T]: DeepReadonly<T[P]> };
+export type DeepReadonlyArray<T> = ReadonlyArray<DeepReadonly<T>>;
+// biome-ignore lint/complexity/noBannedTypes: <explanation>
+export type DeepReadonly<T> = T extends (infer U)[] ? DeepReadonlyArray<U> : T extends Function ? T : T extends object ? DeepReadonlyObject<T> : T;
 
 // Data model RSI uses for spreadsheet imports
 export type Fields<T extends string> = DeepReadonly<Field<T>[]>

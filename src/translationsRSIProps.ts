@@ -1,4 +1,5 @@
-import type { DeepPartial } from "ts-essentials";
+import type { DeepPartial } from "@chakra-ui/react";
+
 
 export const translations = {
 	uploadStep: {

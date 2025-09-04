@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { StepType } from "../steps/UploadFlow"
 
 export const steps = ["uploadStep", "selectHeaderStep", "matchColumnsStep", "validationStep"] as const

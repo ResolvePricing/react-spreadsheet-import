@@ -1,3 +1,4 @@
+
 import merge from "lodash/merge"
 
 import { Steps } from "./steps/Steps"
@@ -9,6 +10,7 @@ import { translations } from "./translationsRSIProps"
 
 export const defaultTheme = themeOverrides
 
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 export const defaultRSIProps: Partial<RsiProps<any>> = {
   autoMapHeaders: true,
   autoMapSelectValues: false,

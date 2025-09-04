@@ -1,4 +1,4 @@
-import { ColumnType, MatchedOptions, MatchedSelectColumn, MatchedSelectOptionsColumn } from "../MatchColumnsStep"
+import { ColumnType, type MatchedOptions, type MatchedSelectColumn, type MatchedSelectOptionsColumn } from "../MatchColumnsStep"
 export const setSubColumn = <T>(
   oldColumn: MatchedSelectColumn<T> | MatchedSelectOptionsColumn<T>,
   entry: string,
@@ -8,7 +8,7 @@ export const setSubColumn = <T>(
   const allMathced = options.every(({ value }) => !!value)
   if (allMathced) {
     return { ...oldColumn, matchedOptions: options as MatchedOptions<T>[], type: ColumnType.matchedSelectOptions }
-  } else {
-    return { ...oldColumn, matchedOptions: options as MatchedOptions<T>[], type: ColumnType.matchedSelect }
   }
+  return { ...oldColumn, matchedOptions: options as MatchedOptions<T>[], type: ColumnType.matchedSelect }
+  
 }

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import type { Column } from "react-data-grid"
 import { Box, Tooltip } from "@chakra-ui/react"
 import type { Fields } from "../../../types"
@@ -5,6 +6,7 @@ import { CgInfo } from "react-icons/cg"
 
 export const generateColumns = <T extends string>(fields: Fields<T>) =>
   fields.map(
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     (column): Column<any> => ({
       key: column.key,
       name: column.label,

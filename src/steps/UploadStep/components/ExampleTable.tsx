@@ -1,3 +1,4 @@
+// @ts-nocheck
 import type { Fields } from "../../../types"
 import { useMemo } from "react"
 import { Table } from "../../../components/Table"

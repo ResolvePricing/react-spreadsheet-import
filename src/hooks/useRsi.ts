@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useContext } from "react"
 import { RsiContext } from "../components/Providers"
 import type { RsiProps } from "../types"

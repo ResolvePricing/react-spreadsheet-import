@@ -1,4 +1,4 @@
-import { Column, ColumnType } from "../MatchColumnsStep"
+import { type Column, ColumnType } from "../MatchColumnsStep"
 
 export const setIgnoreColumn = <T extends string>({ header, index }: Column<T>): Column<T> => ({
   header,

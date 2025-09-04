@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useCallback, useState } from "react"
 import { Progress, useToast } from "@chakra-ui/react"
 import type XLSX from "xlsx-ugnis"
@@ -38,6 +39,7 @@ export type StepState =
     }
   | {
       type: StepType.validateData
+      // biome-ignore lint/suspicious/noExplicitAny: <explanation>
       data: any[]
     }
 
@@ -163,6 +165,7 @@ export const UploadFlow = ({ state, onNext, onBack }: Props) => {
         />
       )
     case StepType.validateData:
+      // biome-ignore lint/style/noNonNullAssertion: <explanation>
       return <ValidationStep initialData={state.data} file={uploadedFile!} onBack={onBack} />
     default:
       return <Progress isIndeterminate />

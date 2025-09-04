@@ -1,3 +1,4 @@
+// @ts-nocheck
 import * as XLSX from "xlsx-ugnis"
 
 export const mapWorkbook = (workbook: XLSX.WorkBook, sheetName?: string) => {

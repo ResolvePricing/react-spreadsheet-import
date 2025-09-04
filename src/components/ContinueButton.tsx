@@ -1,7 +1,8 @@
 import { Button, ModalFooter, useStyleConfig } from "@chakra-ui/react"
-import { themeOverrides } from "../theme"
+import type { themeOverrides } from "../theme"
 
 type ContinueButtonProps = {
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   onContinue: (val: any) => void
   onBack?: () => void
   title: string

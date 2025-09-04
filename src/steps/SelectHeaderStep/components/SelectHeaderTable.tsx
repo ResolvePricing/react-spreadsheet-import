@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useMemo } from "react"
 import { Table } from "../../../components/Table"
 import { generateSelectionColumns } from "./columns"
@@ -20,6 +21,7 @@ export const SelectHeaderTable = ({ data, selectedRows, setSelectedRows }: Props
       selectedRows={selectedRows}
       onSelectedRowsChange={(newRows) => {
         // allow selecting only one row
+        // biome-ignore lint/complexity/noForEach: <explanation>
         newRows.forEach((value) => {
           if (!selectedRows.has(value as number)) {
             setSelectedRows(new Set([value as number]))

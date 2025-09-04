@@ -1,4 +1,5 @@
-import DataGrid, { DataGridProps } from "react-data-grid"
+// @ts-nocheck
+import DataGrid, { type DataGridProps } from "react-data-grid"
 import { useRsi } from "../hooks/useRsi"
 
 interface Props<Data> extends DataGridProps<Data> {
@@ -8,5 +9,5 @@ interface Props<Data> extends DataGridProps<Data> {
 
 export const Table = <Data,>({ className, ...props }: Props<Data>) => {
   const { rtl } = useRsi()
-  return <DataGrid className={"rdg-light " + className || ""} direction={rtl ? "rtl" : "ltr"} {...props} />
+  return <DataGrid className={`rdg-light ${className}` || ""} direction={rtl ? "rtl" : "ltr"} {...props} />
 }

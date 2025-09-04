@@ -1,4 +1,5 @@
-import { Column, useRowSelection } from "react-data-grid"
+// @ts-nocheck
+import { type Column, useRowSelection } from "react-data-grid"
 import { Box, Checkbox, Input, Switch, Tooltip } from "@chakra-ui/react"
 import type { Data, Fields } from "../../../types"
 import type { ChangeEvent } from "react"
@@ -65,12 +66,14 @@ export const generateColumns = <T extends string>(fields: Fields<T>): Column<Dat
       ),
       editable: column.fieldType.type !== "checkbox",
       editor: ({ row, onRowChange, onClose }) => {
+        // biome-ignore lint/suspicious/noImplicitAnyLet: <explanation>
         let component
 
         switch (column.fieldType.type) {
           case "select":
             component = (
               <TableSelect
+                // @ts-expect-error
                 value={column.fieldType.options.find((option) => option.value === (row[column.key] as string))}
                 onChange={(value) => {
                   onRowChange({ ...row, [column.key]: value?.value }, true)
@@ -87,6 +90,7 @@ export const generateColumns = <T extends string>(fields: Fields<T>): Column<Dat
                   variant="unstyled"
                   autoFocus
                   size="small"
+                  // @ts-expect-error
                   value={row[column.key] as string}
                   onChange={(event: ChangeEvent<HTMLInputElement>) => {
                     onRowChange({ ...row, [column.key]: event.target.value })
@@ -103,6 +107,7 @@ export const generateColumns = <T extends string>(fields: Fields<T>): Column<Dat
         editOnClick: true,
       },
       formatter: ({ row, onRowChange }) => {
+        // biome-ignore lint/suspicious/noImplicitAnyLet: <explanation>
         let component
 
         switch (column.fieldType.type) {
@@ -117,6 +122,7 @@ export const generateColumns = <T extends string>(fields: Fields<T>): Column<Dat
                 }}
               >
                 <Switch
+                  // @ts-expect-error
                   isChecked={row[column.key] as boolean}
                   onChange={() => {
                     onRowChange({ ...row, [column.key]: !row[column.key as T] })

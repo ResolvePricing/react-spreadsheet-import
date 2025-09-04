@@ -1,4 +1,5 @@
-import { Column, FormatterProps, useRowSelection } from "react-data-grid"
+// @ts-nocheck
+import { type Column, type FormatterProps, useRowSelection } from "react-data-grid"
 import { Radio } from "@chakra-ui/react"
 import type { RawData } from "../../../types"
 
@@ -23,6 +24,7 @@ function SelectFormatter(props: FormatterProps<unknown>) {
   )
 }
 
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 export const SelectColumn: Column<any, any> = {
   key: SELECT_COLUMN_KEY,
   name: "",

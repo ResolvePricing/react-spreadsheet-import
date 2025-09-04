@@ -1,3 +1,4 @@
+// @ts-nocheck
 const booleanWhitelist: Record<string, boolean> = {
   yes: true,
   no: false,

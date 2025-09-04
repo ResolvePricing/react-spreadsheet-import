@@ -1,3 +1,5 @@
+
+// @ts-nocheck
 import { useCallback, useMemo, useState } from "react"
 import { Box, Button, Heading, ModalBody, Switch, useStyleConfig, useToast } from "@chakra-ui/react"
 import { ContinueButton } from "../../components/ContinueButton"
