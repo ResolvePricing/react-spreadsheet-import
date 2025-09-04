@@ -1,11 +1,11 @@
 import type { DeepPartial } from "@chakra-ui/react";
 
-
 export const translations = {
 	uploadStep: {
 		title: "Upload file",
-		manifestTitle: "Data that we expect",
-		manifestDescription: "You can rename or remove columns in next steps",
+		manifestTitle: "Expected data",
+		manifestDescription:
+			"No worries if column names are different from your data, you can rename or remove columns in the next steps.",
 		maxRecordsExceeded: (maxRecords: string) =>
 			`Too many records. Up to ${maxRecords} allowed`,
 		dropzone: {
