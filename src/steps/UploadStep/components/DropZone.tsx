@@ -52,14 +52,38 @@ export const DropZone = ({ onContinue, isLoading }: DropZoneProps) => {
 		onDropAccepted: async ([file]) => {
 			setLoading(true);
 			try {
-				const arrayBuffer = await readFileAsync(file);
-				const workbook = XLSX.read(arrayBuffer, {
-					cellDates: true,
-					dateNF: dateFormat,
-					raw: parseRaw,
-					dense: true,
-					codepage: 65001,
-				});
+				const LARGE = 50 * 1024 * 1024;
+				const isCsv =
+					file.type === "text/csv" || /\.csv$/i.test(file.name || "");
+				let workbook: XLSX.WorkBook;
+
+				if (isCsv && file.size > LARGE) {
+					const HEAD_BYTES = 2 * 1024 * 1024; // 2MB
+					const headText = await file.slice(0, HEAD_BYTES).text();
+					workbook = XLSX.read(headText, {
+						type: "string",
+						raw: true,
+						dense: true,
+						sheetRows: 100,
+					});
+				} else {
+					const arrayBuffer = await readFileAsync(file);
+					const isLarge = file.size > LARGE;
+					workbook = XLSX.read(arrayBuffer, {
+						dense: true,
+						raw: isLarge || parseRaw,
+						cellDates: !isLarge,
+						dateNF: isLarge ? undefined : dateFormat,
+						cellFormula: false,
+						cellHTML: false,
+						cellNF: false,
+						cellStyles: false,
+						cellText: !isLarge,
+						codepage: 65001,
+						...(isLarge ? { sheets: [0], sheetRows: 100 } : {}),
+					});
+				}
+
 				onContinue(workbook, file);
 			} catch (err) {
 				const message = err instanceof Error ? err.message : String(err);
