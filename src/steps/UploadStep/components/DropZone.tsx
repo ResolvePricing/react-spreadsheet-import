@@ -51,16 +51,29 @@ export const DropZone = ({ onContinue, isLoading }: DropZoneProps) => {
 		},
 		onDropAccepted: async ([file]) => {
 			setLoading(true);
-			const arrayBuffer = await readFileAsync(file);
-			const workbook = XLSX.read(arrayBuffer, {
-				cellDates: true,
-				dateNF: dateFormat,
-				raw: parseRaw,
-				dense: true,
-				codepage: 65001,
-			});
-			setLoading(false);
-			onContinue(workbook, file);
+			try {
+				const arrayBuffer = await readFileAsync(file);
+				const workbook = XLSX.read(arrayBuffer, {
+					cellDates: true,
+					dateNF: dateFormat,
+					raw: parseRaw,
+					dense: true,
+					codepage: 65001,
+				});
+				onContinue(workbook, file);
+			} catch (err) {
+				const message = err instanceof Error ? err.message : String(err);
+				toast({
+					status: "error",
+					variant: "left-accent",
+					position: "bottom-left",
+					title: `${file?.name ?? "File"} ${translations.uploadStep.dropzone.errorToastDescription}`,
+					description: message,
+					isClosable: true,
+				});
+			} finally {
+				setLoading(false);
+			}
 		},
 	});
 
