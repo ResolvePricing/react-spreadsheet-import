@@ -1,0 +1,9 @@
+node_modules
+dist
+dist-commonjs
+types
+.storybook
+e2e
+docs-build
+static
+
