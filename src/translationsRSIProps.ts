@@ -51,10 +51,10 @@ export const translations = {
 	},
 	alerts: {
 		confirmClose: {
-			headerTitle: "Exit import flow",
+			headerTitle: "Exit data import",
 			bodyText: "Are you sure? Your current information will not be saved.",
 			cancelButtonTitle: "Cancel",
-			exitButtonTitle: "Exit flow",
+			exitButtonTitle: "Exit",
 		},
 		submitIncomplete: {
 			headerTitle: "Errors detected",
