@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useCallback, useState } from "react";
+import { useCallback, useState, type ReactNode } from "react";
 import { Progress, useToast } from "@chakra-ui/react";
 import type XLSX from "xlsx-ugnis";
 import { UploadStep } from "./UploadStep/UploadStep";
@@ -80,7 +80,7 @@ export const UploadFlow = ({ state, onNext, onBack }: Props) => {
 
 	const isLargeFile = (uploadedFile?.size ?? 0) > 50 * 1024 * 1024;
 
-	const withPerformanceProvider = (children: React.ReactNode) => {
+	const withPerformanceProvider = (children: ReactNode) => {
 		if (!isLargeFile) return children;
 		return (
 			<RsiContext.Provider
