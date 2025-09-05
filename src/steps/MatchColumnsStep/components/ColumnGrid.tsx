@@ -111,7 +111,7 @@ export const ColumnGrid = <T extends string>({
 							key={column.header + index}
 							py="1.125rem"
 							pl={2}
-							pr={3}
+							pr={0}
 						>
 							{templateColumn(column)}
 						</Box>

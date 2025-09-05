@@ -265,6 +265,7 @@ export const themeOverrides = {
 					placeholder: (provided) => ({
 						...provided,
 						color: "inactiveColor",
+						paddingInlineEnd: 0,
 					}),
 					noOptionsMessage: (provided) => ({
 						...provided,

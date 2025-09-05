@@ -113,9 +113,9 @@ export const MatchColumnsStep = <T extends string>({
 		(value: T, columnIndex: number) => {
 			const field = fields.find(
 				(field: Field<T>) => field.key === value,
-			) as unknown as Field<T>;
+			) as unknown as Field<T> | undefined;
 			const existingFieldIndex = columns.findIndex(
-				(column) => "value" in column && column.value === field.key,
+				(column) => "value" in column && column.value === field?.key,
 			);
 			setColumns(
 				columns.map<Column<T>>((column, index) => {

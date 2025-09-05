@@ -106,19 +106,20 @@ export const MatchColumnSelect = ({
 			state: PlaceholderProps<SelectOption, false, GroupBase<SelectOption>>,
 		) => ({
 			...provided,
-			margin: 0,
+			// margin: 0,
 			whiteSpace: "nowrap",
 			textOverflow: "ellipsis",
 			overflow: "hidden",
+			// backgroundColor: "red",
 		}),
 		singleValue: (
 			provided: SystemStyleObject,
 			state: SingleValueProps<SelectOption, false, GroupBase<SelectOption>>,
 		) => ({
 			...provided,
-			margin: 0,
-			maxWidth: "100%",
-			flex: "1 1 auto",
+			// margin: 0,
+			// maxWidth: "100%",
+			// flex: "1 1 auto",
 			whiteSpace: "nowrap",
 			textOverflow: "ellipsis",
 			overflow: "hidden",
@@ -139,8 +140,8 @@ export const MatchColumnSelect = ({
 			...provided,
 			margin: 0,
 			padding: 0,
-			width: 0,
-			minWidth: 0,
+			// width: 0,
+			// minWidth: 0,
 			flex: "0 0 auto",
 		}),
 	} as const;
@@ -156,6 +157,8 @@ export const MatchColumnSelect = ({
 			menuPosition="fixed"
 			components={components}
 			aria-label={name}
+			isClearable
+			escapeClearsValue
 		/>
 	);
 };
