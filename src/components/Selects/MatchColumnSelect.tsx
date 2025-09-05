@@ -1,11 +1,5 @@
 import { Select, chakraComponents } from "chakra-react-select";
-import type {
-	ValueContainerProps,
-	GroupBase,
-	PlaceholderProps,
-	SingleValueProps,
-	InputProps,
-} from "chakra-react-select";
+import type { ValueContainerProps, GroupBase } from "chakra-react-select";
 import type { SelectOption } from "../../types";
 import { customComponents } from "./MenuPortal";
 import { useStyleConfig } from "@chakra-ui/react";
@@ -87,10 +81,7 @@ export const MatchColumnSelect = ({
 
 	const chakraStyles = {
 		...styles.select,
-		valueContainer: (
-			provided: SystemStyleObject,
-			state: ValueContainerProps<SelectOption, false, GroupBase<SelectOption>>,
-		) => {
+		valueContainer: (provided: SystemStyleObject) => {
 			return {
 				...provided,
 				display: "flex",
@@ -101,10 +92,7 @@ export const MatchColumnSelect = ({
 				minWidth: 0,
 			};
 		},
-		placeholder: (
-			provided: SystemStyleObject,
-			state: PlaceholderProps<SelectOption, false, GroupBase<SelectOption>>,
-		) => ({
+		placeholder: (provided: SystemStyleObject) => ({
 			...provided,
 			// margin: 0,
 			whiteSpace: "nowrap",
@@ -112,10 +100,7 @@ export const MatchColumnSelect = ({
 			overflow: "hidden",
 			// backgroundColor: "red",
 		}),
-		singleValue: (
-			provided: SystemStyleObject,
-			state: SingleValueProps<SelectOption, false, GroupBase<SelectOption>>,
-		) => ({
+		singleValue: (provided: SystemStyleObject) => ({
 			...provided,
 			// margin: 0,
 			// maxWidth: "100%",
@@ -124,19 +109,13 @@ export const MatchColumnSelect = ({
 			textOverflow: "ellipsis",
 			overflow: "hidden",
 		}),
-		inputContainer: (
-			provided: SystemStyleObject,
-			state: InputProps<SelectOption, false, GroupBase<SelectOption>>,
-		) => ({
+		inputContainer: (provided: SystemStyleObject) => ({
 			...provided,
 			flex: "1 1 auto",
 			minWidth: 0,
 			overflow: "hidden",
 		}),
-		input: (
-			provided: SystemStyleObject,
-			state: InputProps<SelectOption, false, GroupBase<SelectOption>>,
-		) => ({
+		input: (provided: SystemStyleObject) => ({
 			...provided,
 			margin: 0,
 			padding: 0,
