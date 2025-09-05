@@ -32,7 +32,7 @@ export const translations = {
 		backButtonTitle: "Back",
 		userTableTitle: "Your table",
 		templateTitle: "Will become",
-		selectPlaceholder: "Select column...",
+		selectPlaceholder: "Select...",
 		ignoredColumnText: "Column ignored",
 		subSelectPlaceholder: "Select...",
 		matchDropdownTitle: "Match",

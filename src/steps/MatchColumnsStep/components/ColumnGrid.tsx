@@ -1,79 +1,130 @@
-import type React from "react"
-import type { Column, Columns } from "../MatchColumnsStep"
-import { Box, Flex, Heading, ModalBody, Text, useStyleConfig } from "@chakra-ui/react"
-import { FadingWrapper } from "../../../components/FadingWrapper"
-import { ContinueButton } from "../../../components/ContinueButton"
-import { useRsi } from "../../../hooks/useRsi"
-import type { themeOverrides } from "../../../theme"
+import type React from "react";
+import type { Column, Columns } from "../MatchColumnsStep";
+import {
+	Box,
+	Flex,
+	Heading,
+	ModalBody,
+	Text,
+	useStyleConfig,
+} from "@chakra-ui/react";
+import { FadingWrapper } from "../../../components/FadingWrapper";
+import { ContinueButton } from "../../../components/ContinueButton";
+import { useRsi } from "../../../hooks/useRsi";
+import type { themeOverrides } from "../../../theme";
 
 type ColumnGridProps<T extends string> = {
-  columns: Columns<T>
-  userColumn: (column: Column<T>) => React.ReactNode
-  templateColumn: (column: Column<T>) => React.ReactNode
-  onContinue: (val: Record<string, string>[]) => void
-  onBack?: () => void
-  isLoading: boolean
-}
+	columns: Columns<T>;
+	userColumn: (column: Column<T>) => React.ReactNode;
+	templateColumn: (column: Column<T>) => React.ReactNode;
+	onContinue: (val: Record<string, string>[]) => void;
+	onBack?: () => void;
+	isLoading: boolean;
+};
 
-export type Styles = (typeof themeOverrides)["components"]["MatchColumnsStep"]["baseStyle"]
+export type Styles =
+	(typeof themeOverrides)["components"]["MatchColumnsStep"]["baseStyle"];
 
 export const ColumnGrid = <T extends string>({
-  columns,
-  userColumn,
-  templateColumn,
-  onContinue,
-  onBack,
-  isLoading,
+	columns,
+	userColumn,
+	templateColumn,
+	onContinue,
+	onBack,
+	isLoading,
 }: ColumnGridProps<T>) => {
-  const { translations } = useRsi()
-  const styles = useStyleConfig("MatchColumnsStep") as Styles
+	const { translations } = useRsi();
+	const styles = useStyleConfig("MatchColumnsStep") as Styles;
 
-  return (
-    <>
-      <ModalBody flexDir="column" p={8} overflow="auto">
-        <Heading sx={styles.heading}>{translations.matchColumnsStep.title}</Heading>
-        <Flex
-          flex={1}
-          display="grid"
-          gridTemplateRows="auto auto auto 1fr"
-          gridTemplateColumns={`0.75rem repeat(${columns.length}, minmax(18rem, auto)) 0.75rem`}
-        >
-          <Box gridColumn={`1/${columns.length + 3}`}>
-            <Text sx={styles.title}>{translations.matchColumnsStep.userTableTitle}</Text>
-          </Box>
-          {columns.map((column, index) => (
-            // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-            <Box gridRow="2/3" gridColumn={`${index + 2}/${index + 3}`} pt={3} key={column.header + index}>
-              {userColumn(column)}
-            </Box>
-          ))}
-          <FadingWrapper gridColumn={`1/${columns.length + 3}`} gridRow="2/3" />
-          <Box gridColumn={`1/${columns.length + 3}`} mt={7}>
-            <Text sx={styles.title}>{translations.matchColumnsStep.templateTitle}</Text>
-          </Box>
-          <FadingWrapper gridColumn={`1/${columns.length + 3}`} gridRow="4/5" />
-          {columns.map((column, index) => (
-            <Box
-              gridRow="4/5"
-              gridColumn={`${index + 2}/${index + 3}`}
-              // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-              key={column.header + index}
-              py="1.125rem"
-              pl={2}
-              pr={3}
-            >
-              {templateColumn(column)}
-            </Box>
-          ))}
-        </Flex>
-      </ModalBody>
-      <ContinueButton
-        isLoading={isLoading}
-        onContinue={onContinue}
-        onBack={onBack}
-        title={translations.matchColumnsStep.nextButtonTitle}
-        backTitle={translations.matchColumnsStep.backButtonTitle}
-      />
-    </>
-  )
-}
+	return (
+		<>
+			<ModalBody flexDir="column" p={8} overflow="auto">
+				<Heading sx={styles.heading}>
+					{translations.matchColumnsStep.title}
+				</Heading>
+				<Flex
+					flex={1}
+					display="grid"
+					gridTemplateRows="auto auto auto auto 1fr"
+					gridTemplateColumns={`0.75rem repeat(${columns.length}, minmax(18rem, auto)) 0.75rem`}
+					pos={"relative"}
+				>
+					{/* <Box gridColumn={`1/${columns.length + 3}`}>
+						<Text sx={styles.title}>
+							{translations.matchColumnsStep.userTableTitle}
+						</Text>
+					</Box> */}
+					{/* Columns in the user provided table that need to be mapped */}
+					{columns.map((column, index) => (
+						<Box
+							gridRow="2/3"
+							gridColumn={`${index + 2}/${index + 3}`}
+							pt={3}
+							// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+							key={column.header + index}
+						>
+							{userColumn(column)}
+						</Box>
+					))}
+					<FadingWrapper gridColumn={`1/${columns.length + 3}`} gridRow="2/3" />
+					{/* Visual arrows connecting user columns to target columns */}
+					{columns.map((column, index) => (
+						<Flex
+							gridRow="3/4"
+							gridColumn={`${index + 2}/${index + 3}`}
+							key={`${column.header}-${index}-arrow`}
+							align="center"
+							justify="center"
+							py={2}
+							pos={"absolute"}
+							top={-45}
+							left={"50%"}
+							// top={0}
+							// left={0}
+							// right={0}
+							// bottom={0}
+							// display="flex"
+							// alignItems="center"
+						>
+							<Text
+								fontSize="2rem"
+								color="purple.400"
+								fontWeight="bold"
+								aria-hidden
+							>
+								↓
+							</Text>
+						</Flex>
+					))}
+					<Box gridColumn={`1/${columns.length + 3}`} gridRow="4/5" mt={7}>
+						<Text sx={styles.title}>
+							{translations.matchColumnsStep.templateTitle}
+						</Text>
+					</Box>
+					<FadingWrapper gridColumn={`1/${columns.length + 3}`} gridRow="5/6" />
+					{/* Columns in the target table */}
+					{columns.map((column, index) => (
+						<Box
+							gridRow="5/6"
+							gridColumn={`${index + 2}/${index + 3}`}
+							// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+							key={column.header + index}
+							py="1.125rem"
+							pl={2}
+							pr={3}
+						>
+							{templateColumn(column)}
+						</Box>
+					))}
+				</Flex>
+			</ModalBody>
+			<ContinueButton
+				isLoading={isLoading}
+				onContinue={onContinue}
+				onBack={onBack}
+				title={translations.matchColumnsStep.nextButtonTitle}
+				backTitle={translations.matchColumnsStep.backButtonTitle}
+			/>
+		</>
+	);
+};

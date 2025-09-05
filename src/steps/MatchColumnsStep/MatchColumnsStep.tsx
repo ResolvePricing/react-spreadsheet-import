@@ -87,7 +87,7 @@ export const MatchColumnsStep = <T extends string>({
 	onBack,
 }: MatchColumnsProps<T>) => {
 	const toast = useToast();
-	const dataExample = data.slice(0, 2);
+	const dataExample = data.slice(0, 3);
 	const {
 		fields,
 		autoMapHeaders,
