@@ -136,6 +136,9 @@ export const MatchColumnSelect = ({
 			menuPosition="fixed"
 			components={components}
 			aria-label={name}
+			name={name}
+			inputId={name}
+			instanceId={name}
 			isClearable
 			escapeClearsValue
 		/>
