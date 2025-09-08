@@ -12,6 +12,10 @@ interface Props {
 	options: readonly SelectOption[];
 	placeholder?: string;
 	name?: string;
+	// Optional custom option (e.g., dynamic field using the column header)
+	customOption?: SelectOption;
+	// If true and there is no current value, default to the custom option
+	defaultToCustomIfEmpty?: boolean;
 }
 
 export const MatchColumnSelect = ({
@@ -20,6 +24,8 @@ export const MatchColumnSelect = ({
 	options,
 	placeholder,
 	name,
+	customOption,
+	defaultToCustomIfEmpty,
 }: Props) => {
 	const styles = useStyleConfig("MatchColumnsStep") as Styles;
 	// Convert snake_case labels to Title Case (e.g., "snake_case" -> "Snake Case")
@@ -30,15 +36,35 @@ export const MatchColumnSelect = ({
 			.map((part) => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
 			.join(" ");
 
-	const transformedOptions = options.map((opt) => ({
+	const baseTransformedOptions = options.map((opt) => ({
 		...opt,
 		label: opt.label.includes("_") ? toTitleFromSnake(opt.label) : opt.label,
 	}));
 
+	// Include custom option (as the first option) when provided
+	const transformedOptions = customOption
+		? [
+				{
+					...customOption,
+					label: customOption.label.includes("_")
+						? toTitleFromSnake(customOption.label)
+						: customOption.label,
+				},
+				...baseTransformedOptions,
+			]
+		: baseTransformedOptions;
+
 	// Ensure selected value references the transformed option object
-	const transformedValue = value
+	let transformedValue = value
 		? transformedOptions.find((opt) => opt.value === value.value) || value
 		: null;
+
+	// Default to custom option selection if requested and there is no current value
+	if (!transformedValue && customOption && defaultToCustomIfEmpty) {
+		transformedValue = transformedOptions.find(
+			(opt) => opt.value === customOption.value,
+		) as SelectOption;
+	}
 
 	// Prefix the input with the Resolve logo inside the value container
 	const ValueContainer = (

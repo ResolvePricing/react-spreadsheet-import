@@ -47,155 +47,157 @@ export const generateColumns = <T extends string>(
 			);
 		},
 	},
-	...fields.map(
-		(column): Column<Data<T> & Meta> => ({
-			key: column.key,
-			name: column.label,
-			minWidth: 150,
-			resizable: true,
-			headerRenderer: () => (
-				<Box display="flex" gap={1} alignItems="center" position="relative">
-					<Box flex={1} overflow="hidden" textOverflow="ellipsis">
-						{column.label}
+	...fields
+		.filter((column) => column.label !== "__index")
+		.map(
+			(column, index): Column<Data<T> & Meta> => ({
+				key: `${column.key}__${index}`,
+				name: column.label,
+				minWidth: 150,
+				resizable: true,
+				headerRenderer: () => (
+					<Box display="flex" gap={1} alignItems="center" position="relative">
+						<Box flex={1} overflow="hidden" textOverflow="ellipsis">
+							{column.label}
+						</Box>
+						{column.description && (
+							<Tooltip placement="top" hasArrow label={column.description}>
+								<Box flex={"0 0 auto"}>
+									<CgInfo size="16px" />
+								</Box>
+							</Tooltip>
+						)}
 					</Box>
-					{column.description && (
-						<Tooltip placement="top" hasArrow label={column.description}>
-							<Box flex={"0 0 auto"}>
-								<CgInfo size="16px" />
-							</Box>
-						</Tooltip>
-					)}
-				</Box>
-			),
-			editable: column.fieldType.type !== "checkbox",
-			editor: ({ row, onRowChange, onClose }) => {
-				// biome-ignore lint/suspicious/noImplicitAnyLet: <explanation>
-				let component;
+				),
+				editable: column.fieldType.type !== "checkbox",
+				editor: ({ row, onRowChange, onClose }) => {
+					// biome-ignore lint/suspicious/noImplicitAnyLet: <explanation>
+					let component;
 
-				switch (column.fieldType.type) {
-					case "select":
-						component = (
-							<TableSelect
-								// @ts-expect-error
-								value={column.fieldType.options.find(
-									(option) => option.value === (row[column.key] as string),
-								)}
-								onChange={(value) => {
-									onRowChange({ ...row, [column.key]: value?.value }, true);
-								}}
-								options={column.fieldType.options}
-								name={`validation-select-${String(column.key)}`}
-							/>
-						);
-						break;
-					default:
-						component = (
-							<Box paddingInlineStart="0.5rem">
-								<Input
-									ref={autoFocusAndSelect}
-									variant="unstyled"
-									autoFocus
-									size="small"
-									name={`validation-input-${String(column.key)}`}
-									id={`validation-input-${String(column.key)}`}
+					switch (column.fieldType.type) {
+						case "select":
+							component = (
+								<TableSelect
 									// @ts-expect-error
-									value={row[column.key] as string}
-									onChange={(event: ChangeEvent<HTMLInputElement>) => {
-										onRowChange({ ...row, [column.key]: event.target.value });
+									value={column.fieldType.options.find(
+										(option) => option.value === (row[column.key] as string),
+									)}
+									onChange={(value) => {
+										onRowChange({ ...row, [column.key]: value?.value }, true);
 									}}
-									onBlur={() => onClose(true)}
+									options={column.fieldType.options}
+									name={`validation-select-${String(column.key)}`}
 								/>
-							</Box>
-						);
-				}
+							);
+							break;
+						default:
+							component = (
+								<Box paddingInlineStart="0.5rem">
+									<Input
+										ref={autoFocusAndSelect}
+										variant="unstyled"
+										autoFocus
+										size="small"
+										name={`validation-input-${String(column.key)}`}
+										id={`validation-input-${String(column.key)}`}
+										// @ts-expect-error
+										value={row[column.key] as string}
+										onChange={(event: ChangeEvent<HTMLInputElement>) => {
+											onRowChange({ ...row, [column.key]: event.target.value });
+										}}
+										onBlur={() => onClose(true)}
+									/>
+								</Box>
+							);
+					}
 
-				return component;
-			},
-			editorOptions: {
-				editOnClick: true,
-			},
-			formatter: ({ row, onRowChange }) => {
-				// biome-ignore lint/suspicious/noImplicitAnyLet: <explanation>
-				let component;
+					return component;
+				},
+				editorOptions: {
+					editOnClick: true,
+				},
+				formatter: ({ row, onRowChange }) => {
+					// biome-ignore lint/suspicious/noImplicitAnyLet: <explanation>
+					let component;
 
-				switch (column.fieldType.type) {
-					case "checkbox":
-						component = (
-							<Box
-								display="flex"
-								alignItems="center"
-								height="100%"
-								onClick={(event) => {
-									event.stopPropagation();
-								}}
-							>
-								<Switch
-									name={`validation-switch-${String(column.key)}`}
-									// @ts-expect-error
-									isChecked={row[column.key] as boolean}
-									onChange={() => {
-										onRowChange({
-											...row,
-											[column.key]: !row[column.key as T],
-										});
+					switch (column.fieldType.type) {
+						case "checkbox":
+							component = (
+								<Box
+									display="flex"
+									alignItems="center"
+									height="100%"
+									onClick={(event) => {
+										event.stopPropagation();
 									}}
-								/>
-							</Box>
-						);
-						break;
-					case "select":
-						component = (
-							<Box
-								minWidth="100%"
-								minHeight="100%"
-								overflow="hidden"
-								textOverflow="ellipsis"
-							>
-								{column.fieldType.options.find(
-									(option) => option.value === row[column.key as T],
-								)?.label || null}
-							</Box>
-						);
-						break;
-					default:
-						component = (
-							<Box
-								minWidth="100%"
-								minHeight="100%"
-								overflow="hidden"
-								textOverflow="ellipsis"
-							>
-								{row[column.key as T]}
-							</Box>
-						);
-				}
+								>
+									<Switch
+										name={`validation-switch-${String(column.key)}`}
+										// @ts-expect-error
+										isChecked={row[column.key] as boolean}
+										onChange={() => {
+											onRowChange({
+												...row,
+												[column.key]: !row[column.key as T],
+											});
+										}}
+									/>
+								</Box>
+							);
+							break;
+						case "select":
+							component = (
+								<Box
+									minWidth="100%"
+									minHeight="100%"
+									overflow="hidden"
+									textOverflow="ellipsis"
+								>
+									{column.fieldType.options.find(
+										(option) => option.value === row[column.key as T],
+									)?.label || null}
+								</Box>
+							);
+							break;
+						default:
+							component = (
+								<Box
+									minWidth="100%"
+									minHeight="100%"
+									overflow="hidden"
+									textOverflow="ellipsis"
+								>
+									{row[column.key as T]}
+								</Box>
+							);
+					}
 
-				if (row.__errors?.[column.key]) {
-					return (
-						<Tooltip
-							placement="top"
-							hasArrow
-							label={row.__errors?.[column.key]?.message}
-						>
-							{component}
-						</Tooltip>
-					);
-				}
+					if (row.__errors?.[column.key]) {
+						return (
+							<Tooltip
+								placement="top"
+								hasArrow
+								label={row.__errors?.[column.key]?.message}
+							>
+								{component}
+							</Tooltip>
+						);
+					}
 
-				return component;
-			},
-			cellClass: (row: Meta) => {
-				switch (row.__errors?.[column.key]?.level) {
-					case "error":
-						return "rdg-cell-error";
-					case "warning":
-						return "rdg-cell-warning";
-					case "info":
-						return "rdg-cell-info";
-					default:
-						return "";
-				}
-			},
-		}),
-	),
+					return component;
+				},
+				cellClass: (row: Meta) => {
+					switch (row.__errors?.[column.key]?.level) {
+						case "error":
+							return "rdg-cell-error";
+						case "warning":
+							return "rdg-cell-warning";
+						case "info":
+							return "rdg-cell-info";
+						default:
+							return "";
+					}
+				},
+			}),
+		),
 ];

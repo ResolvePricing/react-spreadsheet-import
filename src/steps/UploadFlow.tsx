@@ -14,6 +14,12 @@ import { exceedsMaxRecords } from "../utils/exceedsMaxRecords";
 import { useRsi } from "../hooks/useRsi";
 import type { RawData } from "../types";
 
+type LocalField = {
+	label: string;
+	key: string;
+	fieldType: { type: "input" | "select" | "checkbox" };
+};
+
 export enum StepType {
 	upload = "upload",
 	selectSheet = "selectSheet",
@@ -63,6 +69,9 @@ export const UploadFlow = ({ state, onNext, onBack }: Props) => {
 		tableHook,
 	} = rsiValues;
 	const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+	const [overrideFields, setOverrideFields] = useState<LocalField[] | null>(
+		null,
+	);
 	const toast = useToast();
 	const errorToast = useCallback(
 		(description: string) => {
@@ -196,9 +205,28 @@ export const UploadFlow = ({ state, onNext, onBack }: Props) => {
 					onContinue={async (values, rawData, columns) => {
 						try {
 							const data = await matchColumnsStepHook(values, rawData, columns);
+							// Build effective fields including dynamic custom input fields derived from columns
+							const baseFields = fields as unknown as LocalField[];
+							const baseKeys = new Set(baseFields.map((f) => f.key));
+							const extra: LocalField[] = (
+								columns as unknown as Array<{ header: string; value?: string }>
+							)
+								.filter((col) =>
+									Object.prototype.hasOwnProperty.call(col, "value"),
+								)
+								.map((col) => ({
+									label: col.header,
+									key: String((col as unknown as { value: string }).value),
+									fieldType: { type: "input" },
+								}))
+								.filter((f) => !!f.key && !baseKeys.has(f.key));
+							const effectiveFields: LocalField[] = extra.length
+								? [...baseFields, ...extra]
+								: baseFields;
+							setOverrideFields(effectiveFields);
 							const dataWithMeta = await addErrorsAndRunHooks(
 								data,
-								fields,
+								effectiveFields as unknown as typeof fields,
 								rowHook,
 								tableHook,
 							);
@@ -215,19 +243,23 @@ export const UploadFlow = ({ state, onNext, onBack }: Props) => {
 			);
 		case StepType.validateData:
 			return withPerformanceProvider(
-				uploadedFile ? (
-					<ValidationStep
-						initialData={state.data}
-						file={uploadedFile}
-						onBack={onBack}
-					/>
-				) : (
-					<ValidationStep
-						initialData={state.data}
-						file={new File([""], "unknown.csv")}
-						onBack={onBack}
-					/>
-				),
+				<RsiContext.Provider
+					value={{ ...rsiValues, fields: overrideFields ?? fields }}
+				>
+					{uploadedFile ? (
+						<ValidationStep
+							initialData={state.data}
+							file={uploadedFile}
+							onBack={onBack}
+						/>
+					) : (
+						<ValidationStep
+							initialData={state.data}
+							file={new File([""], "unknown.csv")}
+							onBack={onBack}
+						/>
+					)}
+				</RsiContext.Provider>,
 			);
 		default:
 			return <Progress isIndeterminate />;
