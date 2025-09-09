@@ -26,13 +26,14 @@ export type RsiProps<T extends string> = {
 		rawData: RawData[],
 		columns: Columns<T>,
 	) => Promise<Data<T>[]>;
+	// Notifies consumer of current template columns mapping (including custom selections)
+	onColumnsChange?: (columns: Columns<T>) => void;
 	// Runs after column matching and on entry change
 	rowHook?: RowHook<T>;
 	// Runs after column matching and on entry change
 	tableHook?: TableHook<T>;
 	// Function called after user finishes the flow. You can return a promise that will be awaited.
-	// biome-ignore lint/suspicious/noConfusingVoidType lint/suspicious/noExplicitAny: <explanation>
-	onSubmit: (data: Result<T>, file: File) => void | Promise<any>;
+	onSubmit: (data: Result<T>, file: File) => void | Promise<void>;
 	// Allows submitting with errors. Default: true
 	allowInvalidSubmit?: boolean;
 	// Enable navigation in stepper component and show back button. Default: false
@@ -41,6 +42,8 @@ export type RsiProps<T extends string> = {
 	translations?: TranslationsRSIProps;
 	// Theme configuration passed to underlying Chakra-UI
 	customTheme?: object;
+	// Template used to create dynamic custom fields when allowCustomFields is enabled
+	customFieldTemplate?: Field<T>;
 	// Specifies maximum number of rows for a single import
 	maxRecords?: number;
 	// Maximum upload filesize (in bytes)
@@ -71,10 +74,9 @@ export type DeepReadonlyObject<T> = {
 	readonly [P in keyof T]: DeepReadonly<T[P]>;
 };
 export type DeepReadonlyArray<T> = ReadonlyArray<DeepReadonly<T>>;
-// biome-ignore lint/complexity/noBannedTypes: <explanation>
 export type DeepReadonly<T> = T extends (infer U)[]
 	? DeepReadonlyArray<U>
-	: T extends Function
+	: T extends (...args: unknown[]) => unknown
 		? T
 		: T extends object
 			? DeepReadonlyObject<T>
@@ -88,6 +90,9 @@ export type Field<T extends string> = {
 	label: string;
 	// Field's unique identifier
 	key: T;
+	// Optional selectable column data types – if provided with more than one value,
+	// a select UI can be shown by consumers to pick one of these types per column
+	columnTypes?: string[];
 	// UI-facing additional information displayed via tooltip and ? icon
 	description?: string;
 	// Alternate labels used for fields' auto-matching, e.g. "fname" -> "firstName"

@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState, useRef } from "react";
 import { useToast } from "@chakra-ui/react";
 import { UserTableColumn } from "./components/UserTableColumn";
 import { useRsi } from "../../hooks/useRsi";
@@ -38,23 +38,32 @@ export type MatchedOptions<T> = {
 	value: T;
 };
 
-type EmptyColumn = { type: ColumnType.empty; index: number; header: string };
+// Extend column shapes to store selectedColumnType
+type EmptyColumn = {
+	type: ColumnType.empty;
+	index: number;
+	header: string;
+	selectedColumnType?: string;
+};
 type IgnoredColumn = {
 	type: ColumnType.ignored;
 	index: number;
 	header: string;
+	selectedColumnType?: string;
 };
 type MatchedColumn<T> = {
 	type: ColumnType.matched;
 	index: number;
 	header: string;
 	value: T;
+	selectedColumnType?: string;
 };
 type MatchedSwitchColumn<T> = {
 	type: ColumnType.matchedCheckbox;
 	index: number;
 	header: string;
 	value: T;
+	selectedColumnType?: string;
 };
 export type MatchedSelectColumn<T> = {
 	type: ColumnType.matchedSelect;
@@ -62,6 +71,7 @@ export type MatchedSelectColumn<T> = {
 	header: string;
 	value: T;
 	matchedOptions: Partial<MatchedOptions<T>>[];
+	selectedColumnType?: string;
 };
 export type MatchedSelectOptionsColumn<T> = {
 	type: ColumnType.matchedSelectOptions;
@@ -69,6 +79,7 @@ export type MatchedSelectOptionsColumn<T> = {
 	header: string;
 	value: T;
 	matchedOptions: MatchedOptions<T>[];
+	selectedColumnType?: string;
 };
 
 export type Column<T extends string> =
@@ -97,7 +108,23 @@ export const MatchColumnsStep = <T extends string>({
 		autoMapDistance,
 		translations,
 		allowCustomFields,
-	} = rsi;
+		customFieldTemplate,
+		onColumnsChange,
+	} = rsi as unknown as {
+		fields: RsiField<T>[];
+		autoMapHeaders: boolean;
+		autoMapSelectValues: boolean;
+		autoMapDistance: number;
+		translations: {
+			matchColumnsStep: {
+				duplicateColumnWarningTitle: string;
+				duplicateColumnWarningDescription: string;
+			};
+		};
+		allowCustomFields: boolean;
+		customFieldTemplate?: RsiField<T>;
+		onColumnsChange?: (columns: Columns<T>) => void;
+	};
 	const [isLoading, setIsLoading] = useState(false);
 	const safeHeaderValues: string[] = Array.isArray(headerValues)
 		? (headerValues as string[])
@@ -107,6 +134,7 @@ export const MatchColumnsStep = <T extends string>({
 			type: ColumnType.empty,
 			index,
 			header: value ?? "",
+			selectedColumnType: undefined,
 		})),
 	);
 	const [showUnmatchedFieldsAlert, setShowUnmatchedFieldsAlert] =
@@ -136,9 +164,12 @@ export const MatchColumnsStep = <T extends string>({
 				: value;
 			const dynamicField: RsiField<T> | undefined = isCustom
 				? ({
+						...(customFieldTemplate as RsiField<T> | undefined),
 						label: selectedKey as unknown as string,
 						key: selectedKey as T,
-						fieldType: { type: "input" },
+						fieldType:
+							(customFieldTemplate?.fieldType as RsiField<T>["fieldType"]) ??
+							({ type: "input" } as RsiField<T>["fieldType"]),
 					} as RsiField<T>)
 				: undefined;
 			const field =
@@ -179,6 +210,16 @@ export const MatchColumnsStep = <T extends string>({
 					return column;
 				}),
 			);
+			onColumnsChange?.(
+				columns.map<Column<T>>((column, index) => {
+					columnIndex === index ? setColumn(column, field, data) : column;
+					if (columnIndex === index) {
+						return setColumn(column, field, data, autoMapSelectValues);
+					}
+					if (index === existingFieldIndex) return setColumn(column);
+					return column;
+				}),
+			);
 		},
 		[
 			autoMapSelectValues,
@@ -188,6 +229,8 @@ export const MatchColumnsStep = <T extends string>({
 			toast,
 			translations.matchColumnsStep.duplicateColumnWarningDescription,
 			translations.matchColumnsStep.duplicateColumnWarningTitle,
+			customFieldTemplate,
+			onColumnsChange,
 		],
 	);
 
@@ -225,8 +268,42 @@ export const MatchColumnsStep = <T extends string>({
 						: column,
 				),
 			);
+			onColumnsChange?.(
+				columns.map((column, index) =>
+					columnIndex === index && "matchedOptions" in column
+						? setSubColumn(column, entry, value)
+						: column,
+				),
+			);
 		},
-		[columns, setColumns],
+		[columns, setColumns, onColumnsChange],
+	);
+
+	// New handler: per-column type selection
+	const onColumnTypeChange = useCallback(
+		(value: string, columnIndex: number) => {
+			setColumns((prev) =>
+				prev.map((column, index) =>
+					columnIndex === index
+						? ({
+								...(column as { [k: string]: unknown }),
+								selectedColumnType: value,
+							} as Column<T>)
+						: column,
+				),
+			);
+			onColumnsChange?.(
+				columns.map((column, index) =>
+					columnIndex === index
+						? ({
+								...(column as { [k: string]: unknown }),
+								selectedColumnType: value,
+							} as Column<T>)
+						: column,
+				),
+			);
+		},
+		[columns, onColumnsChange],
 	);
 
 	const unmatchedRequiredFields = useMemo(
@@ -265,50 +342,56 @@ export const MatchColumnsStep = <T extends string>({
 		setIsLoading(false);
 	}, [onContinue, columns, data, effectiveFields]);
 
-	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-	useEffect(
-		() => {
-			let next = columns;
-			if (autoMapHeaders) {
-				next = getMatchedColumns(
-					columns,
-					fields,
-					data,
-					autoMapDistance,
-					autoMapSelectValues,
-				);
-			}
-			if (allowCustomFields) {
-				const added: RsiField<T>[] = [];
-				next = next.map((col) => {
-					if (col.type === ColumnType.empty) {
-						const dynamicField: RsiField<T> = {
-							label: col.header as unknown as string,
-							key: col.header as unknown as T,
-							fieldType: { type: "input" },
-						};
-						added.push(dynamicField);
-						return setColumn(col, dynamicField, data, autoMapSelectValues);
-					}
-					return col;
-				});
-				if (added.length) {
-					setCustomFields((prev) => {
-						const map = new Map<string, RsiField<T>>();
-						for (const f of prev) map.set(f.key as unknown as string, f);
-						for (const f of added) {
-							const k = f.key as unknown as string;
-							if (!map.has(k)) map.set(k, f);
-						}
-						return Array.from(map.values());
-					});
+	// Initialize columns (auto-map + custom fields) only once to avoid update loops
+	const initializedRef = useRef(false);
+	// biome-ignore lint/correctness/useExhaustiveDependencies: initialize once to prevent setState loops
+	useEffect(() => {
+		if (initializedRef.current) return;
+		let next = columns;
+		if (autoMapHeaders) {
+			next = getMatchedColumns(
+				columns,
+				fields,
+				data,
+				autoMapDistance,
+				autoMapSelectValues,
+			);
+		}
+		if (allowCustomFields) {
+			const added: RsiField<T>[] = [];
+			next = next.map((col) => {
+				if (col.type === ColumnType.empty) {
+					const dynamicField: RsiField<T> = {
+						...(customFieldTemplate as RsiField<T>),
+						label: col.header as unknown as string,
+						key: col.header as unknown as T,
+						fieldType:
+							(customFieldTemplate?.fieldType as RsiField<T>["fieldType"]) ?? {
+								type: "input",
+							},
+					};
+					added.push(dynamicField);
+					return setColumn(col, dynamicField, data, autoMapSelectValues);
 				}
+				return col;
+			});
+			if (added.length) {
+				setCustomFields((prev) => {
+					const map = new Map<string, RsiField<T>>();
+					for (const f of prev) map.set(f.key as unknown as string, f);
+					for (const f of added) {
+						const k = f.key as unknown as string;
+						if (!map.has(k)) map.set(k, f);
+					}
+					return Array.from(map.values());
+				});
 			}
-			setColumns(next);
-		},
+		}
+		if (next !== columns) setColumns(next);
+		onColumnsChange?.(next);
+		initializedRef.current = true;
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-		[],
-	);
+	}, []);
 
 	return (
 		<>
@@ -336,6 +419,32 @@ export const MatchColumnsStep = <T extends string>({
 						column={column}
 						onChange={onChange}
 						onSubChange={onSubChange}
+						onColumnTypeChange={onColumnTypeChange}
+						columnTypes={(() => {
+							const CUSTOM_PREFIX = "__custom__:";
+							// @ts-ignore - narrow at runtime
+							let valueKey: string | undefined =
+								"value" in column
+									? (column as { value: string }).value
+									: undefined;
+							if (valueKey?.startsWith(CUSTOM_PREFIX)) {
+								valueKey = valueKey.slice(CUSTOM_PREFIX.length);
+							}
+							const field = effectiveFields.find(
+								(f) => (f.key as unknown as string) === (valueKey ?? ""),
+							);
+							const fromField =
+								(field as unknown as { columnTypes?: string[] } | undefined)
+									?.columnTypes ?? [];
+							if (fromField.length > 1) return fromField;
+							const fromTemplate =
+								(
+									customFieldTemplate as unknown as
+										| { columnTypes?: string[] }
+										| undefined
+								)?.columnTypes ?? [];
+							return fromTemplate;
+						})()}
 					/>
 				)}
 			/>

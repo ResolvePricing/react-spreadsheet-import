@@ -8,6 +8,7 @@ import {
 	Box,
 	AccordionPanel,
 	useStyleConfig,
+	Select as ChakraSelect,
 } from "@chakra-ui/react";
 import { useRsi } from "../../../hooks/useRsi";
 import type { Column } from "../MatchColumnsStep";
@@ -38,13 +39,17 @@ const getAccordionTitle = <T extends string>(
 type TemplateColumnProps<T extends string> = {
 	onChange: (val: T, index: number) => void;
 	onSubChange: (val: T, index: number, option: string) => void;
+	onColumnTypeChange?: (val: string, index: number) => void;
 	column: Column<T>;
+	columnTypes?: string[];
 };
 
 export const TemplateColumn = <T extends string>({
 	column,
 	onChange,
 	onSubChange,
+	onColumnTypeChange,
+	columnTypes,
 }: TemplateColumnProps<T>) => {
 	const { translations, fields, allowCustomFields } = useRsi<T>();
 	const styles = useStyleConfig("MatchColumnsStep") as Styles;
@@ -103,6 +108,27 @@ export const TemplateColumn = <T extends string>({
 						</Box>
 						<MatchIcon isChecked={isChecked} />
 					</Flex>
+					{isCustomSelected && columnTypes && columnTypes.length > 1 ? (
+						<Box mt={2}>
+							<ChakraSelect
+								placeholder={"Select type"}
+								value={
+									(column as { selectedColumnType?: string })
+										.selectedColumnType || ""
+								}
+								onChange={(e) =>
+									onColumnTypeChange?.(e.target.value, column.index)
+								}
+								size="sm"
+							>
+								{columnTypes.map((t: string) => (
+									<option key={t} value={t}>
+										{t}
+									</option>
+								))}
+							</ChakraSelect>
+						</Box>
+					) : null}
 					{isSelect && (
 						<Flex width="100%">
 							<Accordion allowMultiple width="100%">
