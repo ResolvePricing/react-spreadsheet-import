@@ -167,9 +167,26 @@ export const ValidationStep = <T extends string>({
 			},
 			{ validData: [] as Data<T>[], invalidData: [] as Data<T>[], all: data },
 		);
+		
+		// Build a canonical CSV file using current field keys and table rows
+		const keys = (fields as unknown as Array<{ key: string }>).map(
+			(f) => f.key,
+		);
+		const escapeCsv = (val: unknown): string => {
+			if (val === null || val === undefined) return "";
+			const s = String(val);
+			return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+		};
+		const header = keys.join(",");
+		const bodyLines = data.map((row) =>
+			keys.map((k) => escapeCsv((row as Record<string, unknown>)[k])).join(","),
+		);
+		const csv = [header, ...bodyLines].join("\n");
+		const canonicalName = `${(file?.name || "upload").replace(/\.[^/.]+$/, "")}.csv`;
+		const rebuiltFile = new File([csv], canonicalName, { type: "text/csv" });
 		setShowSubmitAlert(false);
 		setSubmitting(true);
-		const response = onSubmit(calculatedData, file);
+		const response = onSubmit(calculatedData, rebuiltFile);
 		if (response?.then) {
 			response
 				.then(() => {
