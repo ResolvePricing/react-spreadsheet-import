@@ -54,18 +54,18 @@
     "react-dom": ">=18"
   },
   "dependencies": {
-    "@chakra-ui/react": "^2.8.1",
-    "@emotion/react": "^11.11.1",
-    "@emotion/styled": "^11.11.0",
-    "chakra-react-select": "^4.7.5",
+    "@chakra-ui/react": "2.8.1",
+    "@emotion/react": "11.11.1",
+    "@emotion/styled": "11.11.0",
+    "chakra-react-select": "4.7.5",
     "chakra-ui-steps": "2.0.4",
-    "framer-motion": "^10.16.4",
+    "framer-motion": "10.16.4",
     "js-levenshtein": "1.1.6",
     "lodash": "4.17.21",
     "react-data-grid": "7.0.0-beta.13",
     "react-dropzone": "14.2.3",
     "react-icons": "4.11.0",
-    "uuid": "^9.0.1",
+    "uuid": "9.0.1",
     "xlsx-ugnis": "0.20.3"
   },
   "devDependencies": {
@@ -75,7 +75,7 @@
     "@babel/preset-typescript": "7.23.2",
     "@emotion/jest": "11.11.0",
     "@jest/types": "27.5.1",
-    "@playwright/test": "^1.39.0",
+    "@playwright/test": "1.39.0",
     "@storybook/addon-essentials": "7.5.1",
     "@storybook/addon-interactions": "7.5.1",
     "@storybook/addon-links": "7.5.1",
@@ -83,14 +83,14 @@
     "@storybook/cli": "7.5.1",
     "@storybook/react": "7.5.1",
     "@storybook/react-webpack5": "7.5.1",
-    "@storybook/testing-library": "^0.0.14-next.2",
+    "@storybook/testing-library": "0.0.14-next.2",
     "@testing-library/dom": "9.3.0",
     "@testing-library/jest-dom": "5.16.5",
     "@testing-library/react": "14.0.0",
     "@testing-library/user-event": "14.4.3",
     "@types/jest": "27.4.1",
     "@types/js-levenshtein": "1.1.1",
-    "@types/node": "^20.8.7",
+    "@types/node": "20.8.7",
     "@types/react": "18.2.6",
     "@types/react-dom": "18.2.4",
     "@types/styled-system": "5.1.16",
@@ -98,7 +98,7 @@
     "@typescript-eslint/eslint-plugin": "5.59.7",
     "@typescript-eslint/parser": "5.59.7",
     "babel-loader": "9.1.3",
-    "chromatic": "^7.4.0",
+    "chromatic": "7.4.0",
     "eslint": "8.41.0",
     "eslint-config-prettier": "8.8.0",
     "eslint-plugin-prettier": "4.2.1",
@@ -122,7 +122,7 @@
     "typescript-transform-paths": "3.4.6"
   },
   "overrides": {
-    "semver": "^7.5.3"
+    "semver": "7.5.3"
   },
   "lint-staged": {
     "*.{ts,tsx}": "eslint",
@@ -145,8 +145,8 @@
       "mjs"
     ],
     "transform": {
-      "^.+\\.(ts|tsx)?$": "ts-jest/dist",
-      "^.+\\.mjs$": "ts-jest/dist"
+      ".+\\.(ts|tsx)?$": "ts-jest/dist",
+      ".+\\.mjs$": "ts-jest/dist"
     },
     "moduleNameMapper": {
       "~/(.*)": "<rootDir>/src/$1"
