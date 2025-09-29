@@ -41,6 +41,7 @@ export const ReactSpreadsheetImport = <T extends string>(
 		<Providers
 			theme={mergedThemes}
 			rsiValues={{ ...props, translations: mergedTranslations }}
+			isOpen={props.isOpen}
 		>
 			<ModalWrapper isOpen={props.isOpen} onClose={props.onClose}>
 				<Steps />

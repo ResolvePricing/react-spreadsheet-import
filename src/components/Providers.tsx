@@ -10,6 +10,8 @@ type ProvidersProps<T extends string> = {
 	children: React.ReactNode;
 	theme: CustomTheme;
 	rsiValues: RsiProps<T>;
+	// This is a hack to avoid chakra global styles being applied when the modal is not open
+	isOpen: boolean;
 };
 
 export const rootId = "chakra-modal-rsi";
@@ -18,6 +20,7 @@ export const Providers = <T extends string>({
 	children,
 	theme,
 	rsiValues,
+	isOpen,
 }: ProvidersProps<T>) => {
 	const mergedTheme = extendTheme(theme);
 
@@ -27,9 +30,19 @@ export const Providers = <T extends string>({
 
 	return (
 		<RsiContext.Provider value={rsiValues}>
-			<ChakraProvider>
+			<ChakraProvider
+				cssVarsRoot={`#${rootId}`}
+				// This is a hack to avoid chakra global styles being applied when the modal is not open
+				resetCSS={isOpen}
+				disableGlobalStyle={!isOpen}
+			>
 				{/* cssVarsRoot used to override RSI defaultTheme but not the rest of chakra defaultTheme */}
-				<ChakraProvider cssVarsRoot={`#${rootId}`} theme={mergedTheme}>
+				<ChakraProvider
+					cssVarsRoot={`#${rootId}`}
+					theme={mergedTheme}
+					disableGlobalStyle={!isOpen}
+					resetCSS={isOpen}
+				>
 					{children}
 				</ChakraProvider>
 			</ChakraProvider>
