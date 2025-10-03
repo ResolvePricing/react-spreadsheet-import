@@ -24,6 +24,7 @@ export const SubmitDataAlert = ({ isOpen, onClose, onConfirm }: Props) => {
 		<AlertDialog
 			isOpen={isOpen}
 			onClose={onClose}
+			// @ts-expect-error
 			leastDestructiveRef={cancelRef}
 			isCentered
 			id="rsi"

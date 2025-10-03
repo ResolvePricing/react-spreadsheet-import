@@ -420,34 +420,39 @@ export const MatchColumnsStep = <T extends string>({
 						onChange={onChange}
 						onSubChange={onSubChange}
 						onColumnTypeChange={onColumnTypeChange}
-						columnTypes={(() => {
-							const CUSTOM_PREFIX = "__custom__:";
-							// @ts-ignore - narrow at runtime
-							let valueKey: string | undefined =
-								"value" in column
-									? (column as { value: string }).value
-									: undefined;
-							if (valueKey?.startsWith(CUSTOM_PREFIX)) {
-								valueKey = valueKey.slice(CUSTOM_PREFIX.length);
-							}
-							const field = effectiveFields.find(
-								(f) => (f.key as unknown as string) === (valueKey ?? ""),
-							);
-							const fromField =
-								(field as unknown as { columnTypes?: string[] } | undefined)
-									?.columnTypes ?? [];
-							if (fromField.length > 1) return fromField;
-							const fromTemplate =
-								(
-									customFieldTemplate as unknown as
-										| { columnTypes?: string[] }
-										| undefined
-								)?.columnTypes ?? [];
-							return fromTemplate;
-						})()}
+						columnTypes={getTemplateColumnTypes(
+							column,
+							effectiveFields,
+							customFieldTemplate,
+						)}
 					/>
 				)}
 			/>
 		</>
 	);
 };
+
+function getTemplateColumnTypes<T extends string>(
+	column: Column<T>,
+	effectiveFields: RsiField<T>[],
+	customFieldTemplate?: RsiField<T>,
+): string[] {
+	const CUSTOM_PREFIX = "__custom__:";
+	// @ts-ignore - narrow at runtime
+	let valueKey: string | undefined =
+		"value" in column ? (column as { value: string }).value : undefined;
+	if (valueKey?.startsWith(CUSTOM_PREFIX)) {
+		valueKey = valueKey.slice(CUSTOM_PREFIX.length);
+	}
+	const field = effectiveFields.find(
+		(f) => (f.key as unknown as string) === (valueKey ?? ""),
+	);
+	const fromField =
+		(field as unknown as { columnTypes?: string[] } | undefined)?.columnTypes ??
+		[];
+	if (fromField.length > 1) return fromField;
+	const fromTemplate =
+		(customFieldTemplate as unknown as { columnTypes?: string[] } | undefined)
+			?.columnTypes ?? [];
+	return fromTemplate;
+}

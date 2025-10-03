@@ -32,6 +32,7 @@ export const UnmatchedFieldsAlert = ({
 		<AlertDialog
 			isOpen={isOpen}
 			onClose={onClose}
+			// @ts-expect-error
 			leastDestructiveRef={cancelRef}
 			isCentered
 			id="rsi"
