@@ -50,21 +50,21 @@
   },
   "homepage": "https://github.com/UgnisSoftware/react-spreadsheet-import#readme",
   "peerDependencies": {
-    "react": ">=18",
-    "react-dom": ">=18"
+    "react": ">=19",
+    "react-dom": ">=19"
   },
   "dependencies": {
-    "@chakra-ui/react": "2.8.1",
-    "@emotion/react": "11.11.1",
-    "@emotion/styled": "11.11.0",
-    "chakra-react-select": "4.7.5",
+    "@chakra-ui/react": "2.10.9",
+    "@emotion/react": "11.14.0",
+    "@emotion/styled": "11.14.1",
+    "chakra-react-select": "4.10.1",
     "chakra-ui-steps": "2.0.4",
     "framer-motion": "10.16.4",
     "js-levenshtein": "1.1.6",
     "lodash": "4.17.21",
     "react-data-grid": "7.0.0-beta.13",
-    "react-dropzone": "14.2.3",
-    "react-icons": "4.11.0",
+    "react-dropzone": "14.3.8",
+    "react-icons": "5.5.0",
     "uuid": "9.0.1",
     "xlsx-ugnis": "0.20.3"
   },
@@ -91,7 +91,7 @@
     "@types/jest": "27.4.1",
     "@types/js-levenshtein": "1.1.1",
     "@types/node": "20.8.7",
-    "@types/react": "18.2.6",
+    "@types/react": "19.2.0",
     "@types/react-dom": "18.2.4",
     "@types/styled-system": "5.1.16",
     "@types/uuid": "9.0.1",

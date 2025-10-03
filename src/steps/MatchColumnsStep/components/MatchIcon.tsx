@@ -21,7 +21,6 @@ export const MatchIcon = (props: MatchIconProps) => {
 	const style = useStyleConfig("MatchIcon", props);
 
 	return (
-		// @ts-expect-error
 		<chakra.div
 			__css={style}
 			minW={6}
