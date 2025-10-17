@@ -142,6 +142,11 @@ export const ValidationStep = <T extends string>({
 		return count;
 	}, [data]);
 
+	const importableRowsCount = useMemo(
+		() => data.length - errorRowsCount,
+		[data, errorRowsCount],
+	);
+
 	const visibleSelectedCount = useMemo(() => {
 		let count = 0;
 		for (const value of tableData) {
@@ -167,7 +172,7 @@ export const ValidationStep = <T extends string>({
 			},
 			{ validData: [] as Data<T>[], invalidData: [] as Data<T>[], all: data },
 		);
-		
+
 		// Build a canonical CSV file using current field keys and table rows
 		const keys = (fields as unknown as Array<{ key: string }>).map(
 			(f) => f.key,
@@ -235,6 +240,9 @@ export const ValidationStep = <T extends string>({
 				onConfirm={submitData}
 			/>
 			<ModalBody pb={0}>
+				<Heading sx={styles.heading}>
+					{translations.validationStep.title}
+				</Heading>
 				<Box
 					display="flex"
 					justifyContent="space-between"
@@ -244,10 +252,18 @@ export const ValidationStep = <T extends string>({
 					gap="8px"
 				>
 					<Box>
-						<Heading sx={styles.heading}>
-							{translations.validationStep.title}
-						</Heading>
-						<Text> Total rows: {data.length} </Text>
+						<Box display="flex" gap="16px" alignItems="center" flexWrap="wrap">
+							<Text> Total rows: {data.length} </Text>
+							<Switch
+								display="flex"
+								alignItems="center"
+								isChecked={filterByErrors}
+								onChange={() => setFilterByErrors(!filterByErrors)}
+								fontSize={"var(--chakra-fontSizes-md)"}
+							>
+								{`${translations.validationStep.filterSwitchTitle} (${errorRowsCount})`}
+							</Switch>
+						</Box>
 					</Box>
 					<Box display="flex" gap="16px" alignItems="center" flexWrap="wrap">
 						<Checkbox
@@ -280,14 +296,6 @@ export const ValidationStep = <T extends string>({
 						<Button variant="outline" size="sm" onClick={deleteSelectedRows}>
 							{translations.validationStep.discardButtonTitle}
 						</Button>
-						<Switch
-							display="flex"
-							alignItems="center"
-							isChecked={filterByErrors}
-							onChange={() => setFilterByErrors(!filterByErrors)}
-						>
-							{`${translations.validationStep.filterSwitchTitle} (${errorRowsCount})`}
-						</Switch>
 					</Box>
 				</Box>
 				<Table
@@ -317,7 +325,9 @@ export const ValidationStep = <T extends string>({
 				isLoading={isSubmitting}
 				onContinue={onContinue}
 				onBack={onBack}
-				title={translations.validationStep.nextButtonTitle}
+				title={translations.validationStep.nextButtonTitle(
+					importableRowsCount.toString(),
+				)}
 				backTitle={translations.validationStep.backButtonTitle}
 			/>
 		</>

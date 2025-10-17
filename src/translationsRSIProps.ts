@@ -42,7 +42,7 @@ export const translations = {
 	},
 	validationStep: {
 		title: "Validate data",
-		nextButtonTitle: "Confirm",
+		nextButtonTitle: (rows: string) => `Import ${rows} Rows`,
 		backButtonTitle: "Back",
 		noRowsMessage: "No data found",
 		noRowsMessageWhenFiltered: "No data containing errors",
