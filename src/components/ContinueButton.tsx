@@ -8,6 +8,7 @@ type ContinueButtonProps = {
 	title: string;
 	backTitle?: string;
 	isLoading?: boolean;
+	entityTitle?: string;
 };
 
 export const ContinueButton = ({
@@ -16,11 +17,20 @@ export const ContinueButton = ({
 	title,
 	backTitle,
 	isLoading,
+	entityTitle,
 }: ContinueButtonProps) => {
 	const styles = useStyleConfig(
 		"Modal",
 	) as (typeof themeOverrides)["components"]["Modal"]["baseStyle"];
 	const nextButtonMobileWidth = onBack ? "8rem" : "100%";
+
+	// Format button title naturally by inserting entityTitle before action verbs
+	let buttonTitle = title;
+	if (entityTitle) {
+		if (title.startsWith("Import")) {
+			buttonTitle = title.replace("Import", `Import ${entityTitle} - `);
+		}
+	}
 	return (
 		<ModalFooter>
 			{onBack && (
@@ -41,7 +51,7 @@ export const ContinueButton = ({
 				onClick={onContinue}
 				isLoading={isLoading}
 			>
-				{title}
+				{buttonTitle}
 			</Button>
 		</ModalFooter>
 	);

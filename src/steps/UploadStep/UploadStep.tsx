@@ -16,7 +16,7 @@ export const UploadStep = ({ onContinue }: UploadProps) => {
 	const styles = useStyleConfig(
 		"UploadStep",
 	) as (typeof themeOverrides)["components"]["UploadStep"]["baseStyle"];
-	const { translations, fields } = useRsi();
+	const { translations, fields, entityTitle } = useRsi();
 	const handleOnContinue = useCallback(
 		async (data: XLSX.WorkBook, file: File) => {
 			setIsLoading(true);
@@ -27,7 +27,9 @@ export const UploadStep = ({ onContinue }: UploadProps) => {
 	);
 	return (
 		<ModalBody>
-			<Text sx={styles.title}>{translations.uploadStep.manifestTitle}</Text>
+			<Text sx={styles.title}>
+				{translations.uploadStep.manifestTitle(entityTitle ?? "")}
+			</Text>
 			<Text sx={styles.subtitle}>
 				{translations.uploadStep.manifestDescription}
 			</Text>

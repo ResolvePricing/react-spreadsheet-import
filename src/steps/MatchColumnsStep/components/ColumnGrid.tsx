@@ -20,6 +20,7 @@ type ColumnGridProps<T extends string> = {
 	onContinue: (val: Record<string, string>[]) => void;
 	onBack?: () => void;
 	isLoading: boolean;
+	entityTitle?: string;
 };
 
 export type Styles =
@@ -32,6 +33,7 @@ export const ColumnGrid = <T extends string>({
 	onContinue,
 	onBack,
 	isLoading,
+	entityTitle,
 }: ColumnGridProps<T>) => {
 	const { translations } = useRsi();
 	const styles = useStyleConfig("MatchColumnsStep") as Styles;
@@ -124,6 +126,7 @@ export const ColumnGrid = <T extends string>({
 				onBack={onBack}
 				title={translations.matchColumnsStep.nextButtonTitle}
 				backTitle={translations.matchColumnsStep.backButtonTitle}
+				entityTitle={entityTitle}
 			/>
 		</>
 	);

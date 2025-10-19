@@ -3,7 +3,10 @@ import type { DeepPartial } from "@chakra-ui/react";
 export const translations = {
 	uploadStep: {
 		title: "Upload file",
-		manifestTitle: "Expected data",
+		manifestTitle: (entityTitle?: string) =>
+			entityTitle?.length
+				? `Expected ${entityTitle.toLowerCase()} data`
+				: "Expected data",
 		manifestDescription:
 			"No worries if column names are different from your data, you can rename or remove columns in the next steps.",
 		maxRecordsExceeded: (maxRecords: string) =>

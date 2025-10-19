@@ -17,7 +17,8 @@ type DropZoneProps = {
 };
 
 export const DropZone = ({ onContinue, isLoading }: DropZoneProps) => {
-	const { translations, maxFileSize, dateFormat, parseRaw } = useRsi();
+	const { translations, maxFileSize, dateFormat, parseRaw, entityTitle } =
+		useRsi();
 	const styles = useStyleConfig(
 		"UploadStep",
 	) as (typeof themeOverrides)["components"]["UploadStep"]["baseStyle"];
@@ -127,7 +128,9 @@ export const DropZone = ({ onContinue, isLoading }: DropZoneProps) => {
 						{translations.uploadStep.dropzone.title}
 					</Text>
 					<Button sx={styles.dropzoneButton} onClick={open}>
-						{translations.uploadStep.dropzone.buttonTitle}
+						{entityTitle
+							? `Select ${entityTitle} file`
+							: translations.uploadStep.dropzone.buttonTitle}
 					</Button>
 				</>
 			)}

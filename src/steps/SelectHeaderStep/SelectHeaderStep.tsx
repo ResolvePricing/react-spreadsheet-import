@@ -21,7 +21,7 @@ export const SelectHeaderStep = ({
 	const styles = useStyleConfig(
 		"SelectHeaderStep",
 	) as (typeof themeOverrides)["components"]["SelectHeaderStep"]["baseStyle"];
-	const { translations } = useRsi();
+	const { translations, entityTitle } = useRsi();
 	const [selectedRows, setSelectedRows] = useState<ReadonlySet<number>>(
 		new Set([0]),
 	);
@@ -54,6 +54,7 @@ export const SelectHeaderStep = ({
 				title={translations.selectHeaderStep.nextButtonTitle}
 				backTitle={translations.selectHeaderStep.backButtonTitle}
 				isLoading={isLoading}
+				entityTitle={entityTitle}
 			/>
 		</>
 	);

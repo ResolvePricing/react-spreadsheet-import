@@ -110,6 +110,7 @@ export const MatchColumnsStep = <T extends string>({
 		allowCustomFields,
 		customFieldTemplate,
 		onColumnsChange,
+		entityTitle,
 	} = rsi as unknown as {
 		fields: RsiField<T>[];
 		autoMapHeaders: boolean;
@@ -124,6 +125,7 @@ export const MatchColumnsStep = <T extends string>({
 		allowCustomFields: boolean;
 		customFieldTemplate?: RsiField<T>;
 		onColumnsChange?: (columns: Columns<T>) => void;
+		entityTitle?: string;
 	};
 	const [isLoading, setIsLoading] = useState(false);
 	const safeHeaderValues: string[] = Array.isArray(headerValues)
@@ -427,6 +429,7 @@ export const MatchColumnsStep = <T extends string>({
 						)}
 					/>
 				)}
+				entityTitle={entityTitle}
 			/>
 		</>
 	);

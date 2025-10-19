@@ -13,6 +13,8 @@ export type RsiProps<T extends string> = {
 	// Allow users to map columns to ad-hoc custom fields not pre-specified in `fields`
 	// When enabled, unmatched columns can be mapped to a dynamic input field using the column header as label/key
 	allowCustomFields?: boolean;
+	// Entity title shown prominently in upload flow (e.g., "Items", "Prices", "Attributes")
+	entityTitle?: string;
 	// Runs after file upload step, receives and returns raw sheet data
 	uploadStepHook?: (data: RawData[]) => Promise<RawData[]>;
 	// Runs after header selection step, receives and returns raw sheet data

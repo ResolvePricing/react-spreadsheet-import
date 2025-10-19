@@ -33,8 +33,15 @@ export const ValidationStep = <T extends string>({
 	file,
 	onBack,
 }: Props<T>) => {
-	const { translations, fields, onClose, onSubmit, rowHook, tableHook } =
-		useRsi<T>();
+	const {
+		translations,
+		fields,
+		onClose,
+		onSubmit,
+		rowHook,
+		tableHook,
+		entityTitle,
+	} = useRsi<T>();
 	const styles = useStyleConfig(
 		"ValidationStep",
 	) as (typeof themeOverrides)["components"]["ValidationStep"]["baseStyle"];
@@ -329,6 +336,7 @@ export const ValidationStep = <T extends string>({
 					importableRowsCount.toString(),
 				)}
 				backTitle={translations.validationStep.backButtonTitle}
+				entityTitle={entityTitle}
 			/>
 		</>
 	);
