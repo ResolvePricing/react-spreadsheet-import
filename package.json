@@ -90,7 +90,7 @@
     "@testing-library/user-event": "14.4.3",
     "@types/jest": "27.4.1",
     "@types/js-levenshtein": "1.1.1",
-    "@types/node": "20.8.7",
+    "@types/node": "24.10.0",
     "@types/react": "19.2.2",
     "@types/react-dom": "19.2.2",
     "@types/styled-system": "5.1.16",
@@ -118,7 +118,7 @@
     "ts-essentials": "9.3.2",
     "ts-jest": "27.1.4",
     "ttypescript": "1.5.15",
-		"typescript": "5.9.3",
+    "typescript": "5.9.3",
     "typescript-transform-paths": "3.4.6"
   },
   "overrides": {
